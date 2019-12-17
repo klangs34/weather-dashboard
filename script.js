@@ -7,14 +7,23 @@ var fiveDayURL = `http://api.openweathermap.org/data/2.5/forecast?APPID=${APIKEY
 var current_datetime = new Date();
 //format date
 var formatted_date = current_datetime.getMonth() + 1 + "/" + current_datetime.getDate() + "/" + current_datetime.getFullYear()
-var searchedArr = [];
+var searchedArr = JSON.parse(localStorage.getItem('searchedItems')) || [];
 var city, temparature, humidity, wind, index, icon;
 var dateEl = $('#date');
 
 $(document).ready(function () {
 
     function displaySearchedList() {
-        console.log('nothing yet')
+        $('#searchedList').empty();
+        //create list item based on searched array if it exists
+        if (searchedArr.length > 0) {
+            searchedArr.forEach(function (val) {
+                console.log(val)
+                var li = $('<li>').attr('class', 'list-group-item');
+                li.text(val);
+                $('#searchedList').append(li)
+            })
+        }
     }
 
     function displayFiveDay() {
@@ -25,15 +34,17 @@ $(document).ready(function () {
             //console.log(response.list.length)
             for (var i = 0; i < response.list.length; i++) {
                 if (response.list[i].dt_txt.indexOf("15:00:00") !== -1) {
-                    console.log(response.list[i]);
                     var forcast = $('#forcast');
                     var fiveDayIcon = `http://openweathermap.org/img/wn/${response.list[i].weather[0].icon}.png`;
                     var temp = response.list[i].main.temp;
                     var humidity = response.list[i].main.humidity;
-                    var div = $('<div class="card p-2 bg-primary text-white" style="width: 20%;">');
+                    var div = $('<div class="card p-2 bg-primary text-white mx-1 px-1" style="width: 18%;">');
                     var dateP = $('<p>');
                     //add data p
-                    dateP.text(response.list[i].dt_txt);
+                    var formattedDate = response.list[i].dt_txt.slice(0, response.list[i].dt_txt.indexOf(" "));
+                    var newFormatDate = new Date(formattedDate);
+                    var lastFormatDate = newFormatDate.getMonth() + 1 + "/" + newFormatDate.getDate() + "/" + newFormatDate.getFullYear();
+                    dateP.text(lastFormatDate);
                     div.append(dateP);
                     //create img
                     var img = $('<img>');
@@ -47,7 +58,7 @@ $(document).ready(function () {
                     //add temp el to the div
                     div.append(tempP);
                     //add div to forcast div
-                    $('#forcast').append(div);
+                    forcast.append(div);
                     var humidityP = $('<p>');
                     humidityP.text('Humidity: ' + humidity + '%');
                     div.append(humidityP);
@@ -56,9 +67,10 @@ $(document).ready(function () {
         })
     }
 
-    $('button').on('click', function (e) {
-        e.preventDefault();
-        var searchedCity = $('#city').val();
+    function getResults(searchedCity) {
+        if (!searchedCity) {
+            var searchedCity = $('#city').val();
+        }
         console.log(searchedCity)
         $.ajax({
             url: cityURL + searchedCity + ',us&units=imperial',
@@ -74,12 +86,23 @@ $(document).ready(function () {
             }).then(function (data) {
                 //set a value for the current UV index.
                 index = data.value;
+                //clear search field
+                $('#city').val(" ");
+                //display results
                 displayDashbord();
+                displaySearchedList();
             })
-            console.log(index)
             //if search returns a result, store the searched value in search array.
-            searchedArr.push(searchedCity);
-            localStorage.setItem('searchedItems', JSON.stringify(searchedCity));
+            //if a new search then push
+            console.log(searchedArr.length)
+            if (searchedArr.length > 0) {
+                if (searchedArr.indexOf(searchedCity) === -1) {
+                    searchedArr.push(searchedCity.toUpperCase());
+                }
+            } else {
+                searchedArr.push(searchedCity.toUpperCase());
+            }
+            localStorage.setItem('searchedItems', JSON.stringify(searchedArr));
             city = searchedCity;
             console.log(city)
             temparature = response.main.temp;
@@ -89,11 +112,18 @@ $(document).ready(function () {
         }).catch(function (error) {
             //set default text in summary section i.e. No results shown...
         })
+    }
+
+    $('button').on('click', function (e) {
+        e.preventDefault();
+        $('#forcast').empty();
+        getResults();
     })
 
 
 
     function displayDashbord() {
+        $('#forcast').empty();
         //put city in city field
         $('#showCity').text(city);
         //put date in date field
@@ -107,6 +137,12 @@ $(document).ready(function () {
         $('#index').text(index);
         displayFiveDay();
     }
+
+    $(document).on('click', 'li', function (e) {
+        e.preventDefault();
+        var searchedCity = $(this).text();
+        getResults(searchedCity);
+    })
 
     displaySearchedList();
 })
