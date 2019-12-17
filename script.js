@@ -1,8 +1,8 @@
 //set variables
 var APIKEY = '9455772c4a40c5c2b46591c2634c0244'
-var cityURL = `http://api.openweathermap.org/data/2.5/weather?APPID=${APIKEY}&q=`
-var cityUV = `http://api.openweathermap.org/data/2.5/uvi?appid=${APIKEY}`
-var fiveDayURL = `http://api.openweathermap.org/data/2.5/forecast?APPID=${APIKEY}&q=`
+var cityURL = `https://api.openweathermap.org/data/2.5/weather?APPID=${APIKEY}&q=`
+var cityUV = `https://api.openweathermap.org/data/2.5/uvi?appid=${APIKEY}`
+var fiveDayURL = `https://api.openweathermap.org/data/2.5/forecast?APPID=${APIKEY}&q=`
 //get current date
 var current_datetime = new Date();
 //format date
@@ -35,7 +35,7 @@ $(document).ready(function () {
             for (var i = 0; i < response.list.length; i++) {
                 if (response.list[i].dt_txt.indexOf("15:00:00") !== -1) {
                     var forcast = $('#forcast');
-                    var fiveDayIcon = `http://openweathermap.org/img/wn/${response.list[i].weather[0].icon}.png`;
+                    var fiveDayIcon = `https://openweathermap.org/img/wn/${response.list[i].weather[0].icon}.png`;
                     var temp = response.list[i].main.temp;
                     var humidity = response.list[i].main.humidity;
                     var div = $('<div class="card p-2 bg-primary text-white mx-1 px-1" style="width: 18%;">');
@@ -108,7 +108,7 @@ $(document).ready(function () {
             temparature = response.main.temp;
             humidity = response.main.humidity;
             wind = response.wind.speed;
-            icon = `http://openweathermap.org/img/wn/${response.weather[0].icon}.png`;
+            icon = `https://openweathermap.org/img/wn/${response.weather[0].icon}.png`;
         }).catch(function (error) {
             //set default text in summary section i.e. No results shown...
         })
