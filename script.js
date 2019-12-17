@@ -21,11 +21,11 @@ $(document).ready(function () {
                 console.log(val)
                 var li = $('<li>').attr('class', 'list-group-item');
                 li.text(val);
-                $('#searchedList').append(li)
-            })
+                $('#searchedList').append(li);
+            })   
         }
     }
-
+        
     function displayFiveDay() {
         $.ajax({
             url: fiveDayURL + city + ',us&units=imperial',
@@ -144,5 +144,8 @@ $(document).ready(function () {
         getResults(searchedCity);
     })
 
+    //show the last searched items if exists in local storage
     displaySearchedList();
+    //show last searched item to start things off
+    getResults(searchedArr[searchedArr.length -1]) 
 })
