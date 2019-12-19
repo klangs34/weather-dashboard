@@ -17,12 +17,16 @@ $(document).ready(function () {
         $('#searchedList').empty();
         //create list item based on searched array if it exists
         if (searchedArr.length > 0) {
+            //show clear btn
+            document.getElementById("clear").style.visibility = "visible";
             searchedArr.forEach(function (val) {
-                console.log(val)
+                //console.log(val)
                 var li = $('<li>').attr('class', 'list-group-item');
                 li.text(val);
                 $('#searchedList').append(li);
             })   
+        } else{
+            document.getElementById("clear").style.visibility = "hidden";
         }
     }
         
@@ -71,50 +75,55 @@ $(document).ready(function () {
         if (!searchedCity) {
             var searchedCity = $('#city').val();
         }
-        console.log(searchedCity)
-        $.ajax({
-            url: cityURL + searchedCity + ',us&units=imperial',
-            method: "GET"
-        }).then(function (response) {
-            console.log(response);
-            //get lattitue and longitude for searched UV index
-            var lat = response.coord.lat;
-            var lon = response.coord.lon;
+        //console.log(searchedCity)
+        if(searchedCity !== ""){
             $.ajax({
-                url: cityUV + `&lat=${lat}&lon=${lon}`,
+                url: cityURL + searchedCity + ',us&units=imperial',
                 method: "GET"
-            }).then(function (data) {
-                //set a value for the current UV index.
-                index = data.value;
-                //clear search field
-                $('#city').val(" ");
-                //display results
-                displayDashbord();
-                displaySearchedList();
-            })
-            //if search returns a result, store the searched value in search array.
-            //if a new search then push
-            console.log(searchedArr.length)
-            if (searchedArr.length > 0) {
-                if (searchedArr.indexOf(searchedCity) === -1) {
+            }).then(function (response) {
+                //console.log(response);
+                //get lattitue and longitude for searched UV index
+                var lat = response.coord.lat;
+                var lon = response.coord.lon;
+                $.ajax({
+                    url: cityUV + `&lat=${lat}&lon=${lon}`,
+                    method: "GET"
+                }).then(function (data) {
+                    //set a value for the current UV index.
+                    index = data.value;
+                    //clear search field
+                    $('#city').val(" ");
+                    //display results
+                    displayDashbord();
+                    displaySearchedList();
+                })
+                //if search returns a result, store the searched value in search array.
+                //if a new search then push
+                //console.log(searchedArr.length)
+                if (searchedArr.length > 0) {
+                    if (searchedArr.indexOf(searchedCity) === -1) {
+                        searchedArr.push(searchedCity.toUpperCase());
+                    }else {
+                        //hide the clear history button 
+                        $('#clear').attr('visbility', true)
+                    }
+                } else {
                     searchedArr.push(searchedCity.toUpperCase());
                 }
-            } else {
-                searchedArr.push(searchedCity.toUpperCase());
-            }
-            localStorage.setItem('searchedItems', JSON.stringify(searchedArr));
-            city = searchedCity;
-            console.log(city)
-            temparature = response.main.temp;
-            humidity = response.main.humidity;
-            wind = response.wind.speed;
-            icon = `https://openweathermap.org/img/wn/${response.weather[0].icon}.png`;
-        }).catch(function (error) {
-            //set default text in summary section i.e. No results shown...
-        })
+                localStorage.setItem('searchedItems', JSON.stringify(searchedArr));
+                city = searchedCity;
+                //console.log(city)
+                temparature = response.main.temp;
+                humidity = response.main.humidity;
+                wind = response.wind.speed;
+                icon = `https://openweathermap.org/img/wn/${response.weather[0].icon}.png`;
+            }).catch(function (error) {
+                //set default text in summary section i.e. No results shown...
+            })
+        }
     }
 
-    $('button').on('click', function (e) {
+    $('#searchBtn').on('click', function (e) {
         e.preventDefault();
         $('#forcast').empty();
         getResults();
@@ -133,7 +142,7 @@ $(document).ready(function () {
         $('#temperature').text(temparature + String.fromCharCode(176) + ' F');
         $('#humidity').text(humidity + '%');
         $('#wind').text(wind + ' MPH');
-        console.log(index)
+        //console.log(index)
         $('#index').text(index);
         displayFiveDay();
     }
@@ -142,6 +151,11 @@ $(document).ready(function () {
         e.preventDefault();
         var searchedCity = $(this).text();
         getResults(searchedCity);
+    })
+
+    $('#clear').on('click', function(){
+        localStorage.clear();
+        location.reload();
     })
 
     //show the last searched items if exists in local storage
