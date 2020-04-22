@@ -9,4 +9,7 @@ so that I can plan a trip accordingly.  This app allows you to search a specific
 # Technology
 This app uses the JQuery library to make an Ajax call to the weather api using the city input by the user.
 
+## Installation
+1. Fork the respository
+1. Use git clone from the CLI to clone the remote repository
 
