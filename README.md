@@ -7,10 +7,9 @@ As a traveler, I want to see the weather outlook for multiple cities so that I c
 This app uses the JQuery library to make an Ajax call to the weather api using the city input by the user.
 
 # Here's a look at the app
-![weather app](weatherDashboard.gif)
-
 https://klangs34.github.io/weather-dashboard/
 
+![weather app](weatherDashboard.gif)
 
 ## Installation options
 1. Fork the respository
