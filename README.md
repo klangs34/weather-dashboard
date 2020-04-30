@@ -9,6 +9,9 @@ This app uses the JQuery library to make an Ajax call to the weather api using t
 # Here's a look at the app
 ![weather app](weatherDashboard.gif)
 
+https://klangs34.github.io/weather-dashboard/
+
+
 ## Installation options
 1. Fork the respository
 1. Use git clone from the CLI to clone the remote repository
