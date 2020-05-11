@@ -158,8 +158,27 @@ $(document).ready(function () {
         location.reload();
     })
 
+    //set the toggle for the theme
+    $('#dark-mode-toggle-1').on('mouseup', function(e){
+        e.stopPropagation();
+        const containerEl = $('.container');
+        containerEl.toggleClass('bg-light')
+    })
+    //if dark is selected then remove the bg-light class
+    function setInitialTheme() {
+        const containerEl = $('.container');
+        const isDarkEl = $('#dark');
+        if(isDarkEl.attr('media') === "all") {
+            containerEl.removeClass('bg-light');
+        } else {
+            containerEl.addClass('bg-light');
+        }
+    }
+
     //show the last searched items if exists in local storage
     displaySearchedList();
     //show last searched item to start things off
     getResults(searchedArr[searchedArr.length -1]) 
+    //set inital theme
+    setInitialTheme();
 })
