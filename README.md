@@ -13,5 +13,5 @@ https://klangs34.github.io/weather-dashboard/
 
 ## Installation options
 1. Fork the respository
-1. Use git clone from the CLI to clone the remote repository
+1. download the repository or use git clone from the CLI to clone the remote repository
 
